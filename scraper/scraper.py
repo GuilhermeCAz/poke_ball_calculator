@@ -1,9 +1,18 @@
 """Gets all Pokémon information from SciresM's GitHub Gist."""
+import contextlib
 import re
+from decimal import Decimal
 
 import requests
-from exceptions import NoMatchFoundError
-from pokemon import Pokemon, PokemonMove, PokemonStats
+
+from models.exceptions import NoMatchFoundError
+from models.pokemon import (
+    Pokemon,
+    PokemonEvolution,
+    PokemonMove,
+    PokemonStats,
+    select_pokemon_type,
+)
 
 BASE_URL: str = 'https://gist.githubusercontent.com/'
 GIST_USERNAME: str = 'SciresM'
@@ -55,7 +64,7 @@ def parse_pokemon(snippet: str) -> Pokemon:
 
     """
 
-    def extract_groups(pattern: str) -> list[str]:
+    def extract_groups(pattern: str, split: bool = True) -> list[str]:
         """
         Search for attributes in snippet using RegEx.
 
@@ -78,11 +87,16 @@ def parse_pokemon(snippet: str) -> Pokemon:
 
         groups: list[str] = []
         for group in matches.groups():
-            split_groups = [
-                attr.strip()
-                for attr in re.split(r'[\.|\/](?!\d{1,2}[a-zA-Z]{1,2})', group)
-            ]
-            groups.extend(split_groups)
+            if split:
+                split_groups = [
+                    attr.strip()
+                    for attr in re.split(
+                        r'[\.|\/](?!\d{1,2}[a-zA-Z]{1,2})', group
+                    )
+                ]
+                groups.extend(split_groups)
+            else:
+                groups.append(group)
 
         return groups
 
@@ -95,29 +109,44 @@ def parse_pokemon(snippet: str) -> Pokemon:
     (gender_ratio_str,) = extract_groups(r'Gender Ratio: (\d+)')
     (catch_rate_str,) = extract_groups(r'Catch Rate: (\d+)')
     abilities = extract_groups(r'Abilities: (.+)')
-    pokemon_type = extract_groups(r'Type: (.+)')
+    types = [
+        select_pokemon_type(type_) for type_ in extract_groups(r'Type: (.+)')
+    ]
     (exp_group,) = extract_groups(r'EXP Group: (.+)')
     egg_group = extract_groups(r'Egg Group: (.+)')
-    height, weight, color = extract_groups(
-        r'Height: (\S+), Weight: (\S+), Color: (.+)'
+    height_str, weight_str, color = extract_groups(
+        r'Height: (\S+)m, Weight: (\S+)kg, Color: (.+)', split=False
     )
     dex_no = int(dex_no_str)
     stats = PokemonStats(*[int(attr) for attr in stats_str])
     ev_yield = PokemonStats(*[int(attr) for attr in ev_yield_str])
     gender_ratio = int(gender_ratio_str)
     catch_rate = int(catch_rate_str)
+    height = Decimal(height_str)
+    weight = Decimal(weight_str)
 
     level_up_moves = [
         PokemonMove(move) for move in re.findall(r'- \[\d+\] (.+)', snippet)
     ]
+    # Level Up Moves:((?:\n- \[\d+\].+)+)
 
     tm_learn_moves = [
         PokemonMove(move, int(tm))
         for tm, move in re.findall(r'- \[TM(\d+)\] (.+)', snippet)
     ]
 
-    _egg_moves = ...  # ends up on level_up_moves
-    _reminder_moves = ...  # ends up on level_up_moves
+    _egg_moves = ...  # to-do: ends up on level_up_moves
+    _reminder_moves = ...  # to-do: ends up on level_up_moves
+
+    evolution = None
+    with contextlib.suppress(NoMatchFoundError):
+        method, level_str, species, item_str = extract_groups(
+            r'Evolves into (.+) @ lv(\d{1,3}) \((.+)\) \[(.+)\]'
+        )
+        level = int(level_str) or None
+        item = item_str if item_str != '0' else None
+        if method and species and (level or item):
+            evolution = PokemonEvolution(method, level, species, item)
 
     return Pokemon(
         dex_no=dex_no,
@@ -127,14 +156,15 @@ def parse_pokemon(snippet: str) -> Pokemon:
         gender_ratio=gender_ratio,
         catch_rate=catch_rate,
         abilities=abilities,
-        pokemon_type=pokemon_type,
+        types=types,
         exp_group=exp_group,
         egg_group=egg_group,
         height=height,
         weight=weight,
         color=color,
         level_up_moves=level_up_moves,
-        tm_learn=tm_learn_moves,
+        tm_learn_moves=tm_learn_moves,
+        evolution=evolution,
     )
 
 
@@ -147,7 +177,10 @@ def main() -> None:
     for snippet in snippets:
         pokemon_list.append(parse_pokemon(snippet))
 
-    print(pokemon_list[100])
+    import pickle
+
+    with open('pokemon_list.sav', 'wb') as f:
+        pickle.dump(pokemon_list, f)
 
 
 if __name__ == '__main__':
