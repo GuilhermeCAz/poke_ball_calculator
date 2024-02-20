@@ -5,7 +5,6 @@ from settings import ROOT
 
 
 class PokeBall(StrEnum):
-
     POKÉ_BALL = auto()
     GREAT_BALL = auto()
     ULTRA_BALL = auto()
@@ -37,5 +36,6 @@ class PokeBall(StrEnum):
 
     def __init__(self, value: str) -> None:
         self._value_ = value.replace('_', ' ').title()
-        self.image = ROOT / 'assets' / 'items' / value.lower()
-
+        self.image = (
+            ROOT / 'assets' / 'items' / f'{value.lower()}.png'
+        )  # .relative_to(ROOT)

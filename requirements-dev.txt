@@ -1,4 +1,7 @@
 mypy==1.8.0
 mypy-extensions==1.0.0
+pandas-stubs==2.1.4.231227 # testing
 ruff==0.2.0
-types-requests==2.31.0.20240125
+types-Pillow==10.2.0.20240213 # testing
+types-pytz==2024.1.0.20240203 # testing
+types-requests==2.31.0.20240125 # testing

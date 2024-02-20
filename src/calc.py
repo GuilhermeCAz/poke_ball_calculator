@@ -1,7 +1,7 @@
 import math
 
 from models.catch_scenario import CatchScenario
-from models.pokemon import Pokemon
+from models.pokemon import Pokemon, PokemonStatus
 from settings import LOW_LEVEL_BONUS_THRESHOLD
 from src import modifiers
 from src.scenarios import get_catch_scenarios
@@ -22,7 +22,7 @@ def calculate_modified_catch_rates(
             modifiers.get_hp_modifier(hp),
             modifiers.get_dark_grass_modifier(601),
             modifiers.get_badge_modifier(8, pokemon.level),
-            modifiers.get_status_modifier('asleep'),
+            modifiers.get_status_modifier(PokemonStatus.ASLEEP),
             modifiers.get_capture_value_coefficient_modifier(
                 catching_power_level, backstrike
             ),
@@ -126,3 +126,21 @@ def calculate_successful_catch_odds(
     if is_critical_catch:
         return successful_shake_odds
     return (successful_shake_odds) ** 4
+
+
+def calculate_overall_catch_rate(modified_catch_rate: int) -> float:
+    ccv = calculate_critical_catch_value(601, modified_catch_rate)
+    critical_catch_odds = calculate_critical_catch_odds(ccv)
+
+    shake_value = calculate_shake_value(modified_catch_rate)
+    successful_shake_odds = calculate_successful_shake_odds(shake_value)
+
+    successful_crit_catch_odds = (
+        critical_catch_odds
+        * calculate_successful_catch_odds(True, successful_shake_odds)
+    )
+    successful_non_crit_catch_odds = (
+        1 - critical_catch_odds
+    ) * calculate_successful_catch_odds(False, successful_shake_odds)
+
+    return successful_crit_catch_odds + successful_non_crit_catch_odds

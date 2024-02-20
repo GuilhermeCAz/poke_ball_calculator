@@ -26,7 +26,7 @@ URL: str = (
 )
 
 
-def get_txt() -> str:
+def get_text() -> str:
     """Extract text from SciresM's GitHub Gist."""
     response = requests.get(URL, timeout=10)
     response.raise_for_status()
@@ -34,7 +34,7 @@ def get_txt() -> str:
     return response.text
 
 
-def split_txt(input_str: str) -> list[str]:
+def split_text(input_str: str) -> list[str]:
     """
     Split text by Pokémon delimiter (======).
 
@@ -170,8 +170,8 @@ def parse_pokemon(snippet: str) -> Pokemon:
 
 def main() -> None:
     """Create list of Pokemon instances obtained from SciresM's GitHub Gist."""
-    txt = get_txt()
-    snippets = split_txt(txt)
+    text = get_text()
+    snippets = split_text(text)
 
     pokemon_list: list[Pokemon] = []
     for snippet in snippets:

@@ -3,6 +3,7 @@ from decimal import Decimal
 
 from models.exceptions import InvalidCatchingPowerError
 from models.poke_ball import PokeBall
+from models.pokemon import PokemonStatus
 from settings import (
     BADGE_THRESHOLDS,
     CATCHING_POWER_MODIFIERS,
@@ -48,11 +49,8 @@ def get_badge_modifier(badges: int, level: int) -> float:
     return 4096
 
 
-def get_status_modifier(status: str) -> int:
-    if status in ('asleep', 'frozen'):
-        return 10240
-
-    return 6144
+def get_status_modifier(status: PokemonStatus) -> int:
+    return status.value
 
 
 def get_capture_value_coefficient_modifier(

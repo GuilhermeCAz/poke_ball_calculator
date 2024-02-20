@@ -33,3 +33,14 @@ def get_pokemon(dex_no: int, level: int) -> Pokemon:
                 return pokemon
 
     raise NoPokemonFoundError(dex_no)
+
+
+def get_all_pokemon() -> list[Pokemon]:
+    with open('pokemon_list.sav', 'rb') as f:
+        pokemon_list = pickle.load(f)  # noqa: S301
+
+    return [
+        pokemon
+        for pokemon in pokemon_list
+        if pokemon.dex_no <= CURRENT_LAST_DEX_NUMBER
+    ]

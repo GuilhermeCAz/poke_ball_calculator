@@ -1,12 +1,21 @@
 """Defines a Pokémon class and its attributes."""
+import itertools
 import math
+import pathlib
 from dataclasses import dataclass
 from decimal import Decimal
-from enum import StrEnum, auto
+from enum import Enum, StrEnum, auto
 
 from pydantic import BaseModel
 
 from models.exceptions import InexistentTypeError
+from settings import ROOT
+
+IMAGE_FOLDER = ROOT / 'assets' / 'pokemon'
+FORM_VARIANTS = tuple(str(i).zfill(3) for i in range(0, 20))
+GENDER_VARIANTS = ('uk', 'mf', 'fd', 'md', 'fo', 'mo')
+GIGANTAMAX_VARIANTS = ('n', 'g')
+SHINY_VARIANTS = ('n', 'r')
 
 
 @dataclass
@@ -19,6 +28,16 @@ class PokemonStats:
     special_attack: int
     special_defense: int
     speed: int
+
+
+class PokemonStatus(Enum):
+    """Represents the statuses a Pokémon might have and their catch bonus."""
+
+    ASLEEP = 10240
+    FROZEN = 10240
+    BURNED = 6144
+    PARALYZED = 6144
+    POISONED = 6144
 
 
 @dataclass
@@ -50,14 +69,6 @@ class PokemonType(StrEnum):
     DARK = auto()
     STEEL = auto()
     FAIRY = auto()
-
-
-class PokemonGender(StrEnum):
-    """Represents the possible genders of a Pokémon."""
-
-    MALE = auto()
-    FEMALE = auto()
-    UNKNOWN = auto()
 
 
 @dataclass
@@ -105,6 +116,22 @@ class Pokemon(BaseModel):
     @property
     def max_hp(self) -> int:
         return self._get_hp_by_iv(31)
+
+    @property
+    def images(self) -> list[pathlib.Path]:
+        _images: list[pathlib.Path] = []
+        for form, gender, gmax, shiny in itertools.product(
+            FORM_VARIANTS, GENDER_VARIANTS, GIGANTAMAX_VARIANTS, SHINY_VARIANTS
+        ):
+            filename = (
+                f'poke_capture_{str(self.dex_no).zfill(4)}_'
+                f'{form}_{gender}_{gmax}_00000000_f_{shiny}.png'
+            )
+            _image = IMAGE_FOLDER / filename
+            if _image.exists():
+                _images.append(_image)
+
+        return _images
 
 
 def select_pokemon_type(type_str: str) -> PokemonType:
