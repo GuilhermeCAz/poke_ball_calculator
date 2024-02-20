@@ -72,7 +72,7 @@ def main() -> None:
             catch_rate = calculate_overall_catch_rate(min_iv_rate)
 
             stats.loc[len(stats)] = [
-                f'<img src="file://{min_iv_scenario.poke_ball.image}">',
+                f'<img src="{min_iv_scenario.poke_ball.image}" height="30" width="30" > ',
                 min_iv_scenario.poke_ball.value,
                 min_iv_scenario.condition,
                 catch_rate * 100,
@@ -82,15 +82,7 @@ def main() -> None:
             by=['Catch Rate', 'Poké Ball', 'Condition'], ascending=False
         )
 
-        st.markdown(stats.to_markdown(index=False), unsafe_allow_html=True)
-        # st.dataframe(  # type: ignore
-        #     data=stats.style.format({'Image': lambda x: x}),  # type: ignore
-        #     height=6000,
-        #     hide_index=True,
-        #     column_config={
-        #         'Catch Rate': st.column_config.NumberColumn(format='%.2f%%')
-        #     },
-        # )
+        st.markdown(stats.to_markdown(index=False, numalign='center', stralign='center'), unsafe_allow_html=True)
 
 
 if __name__ == '__main__':

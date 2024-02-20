@@ -1,3 +1,4 @@
+import streamlit as st
 import pickle
 
 from models.exceptions import InvalidLevelError, NoPokemonFoundError
@@ -34,7 +35,7 @@ def get_pokemon(dex_no: int, level: int) -> Pokemon:
 
     raise NoPokemonFoundError(dex_no)
 
-
+@st.cache_data
 def get_all_pokemon() -> list[Pokemon]:
     with open('pokemon_list.sav', 'rb') as f:
         pokemon_list = pickle.load(f)  # noqa: S301
