@@ -1,5 +1,6 @@
-import streamlit as st
 import pickle
+
+import streamlit as st
 
 from models.exceptions import InvalidLevelError, NoPokemonFoundError
 from models.pokemon import Pokemon
@@ -9,8 +10,8 @@ from settings import CURRENT_LAST_DEX_NUMBER, POKEMON_LEVEL_CAP
 
 def generate_pokemon_sav() -> None:
     """Create list of Pokemon instances obtained from SciresM's GitHub Gist."""
-    txt = scraper.get_txt()
-    snippets = scraper.split_txt(txt)
+    txt = scraper.get_text()
+    snippets = scraper.split_text(txt)
 
     pokemon_list: list[Pokemon] = []
     for snippet in snippets:
@@ -34,6 +35,7 @@ def get_pokemon(dex_no: int, level: int) -> Pokemon:
                 return pokemon
 
     raise NoPokemonFoundError(dex_no)
+
 
 @st.cache_data
 def get_all_pokemon() -> list[Pokemon]:

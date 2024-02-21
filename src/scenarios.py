@@ -49,7 +49,8 @@ def get_catch_scenarios(target_pokemon: Pokemon) -> list[CatchScenario]:
                 CatchScenario(
                     poke_ball=PokeBall.TIMER_BALL,
                     catch_rate=min(turns * 1229 + 0x1000, 0x4000),
-                    condition=f'{turns} turns since battle started',
+                    condition=f'{turns} {'turn' if turns == 1 else 'turns'}'
+                    ' since battle started',
                     # is_condition_true=user information required
                 )
             )
@@ -82,13 +83,19 @@ def get_catch_scenarios(target_pokemon: Pokemon) -> list[CatchScenario]:
             CatchScenario(
                 poke_ball=PokeBall.LEVEL_BALL,
                 catch_rate=0x8000,
-                condition=f'User Pokémon Level >= {4 * target_pokemon.level}',
+                condition='User Pokémon Level '
+                + f'{"=" if 4 * target_pokemon.level == POKEMON_LEVEL_CAP
+                    else ">="}'
+                + f' {4 * target_pokemon.level}',
                 is_possible=4 * target_pokemon.level <= POKEMON_LEVEL_CAP,
             ),
             CatchScenario(
                 poke_ball=PokeBall.LEVEL_BALL,
                 catch_rate=0x4000,
-                condition=f'User Pokémon Level >= {2 * target_pokemon.level}',
+                condition='User Pokémon Level '
+                + f'{"=" if 2 * target_pokemon.level == POKEMON_LEVEL_CAP
+                    else ">="}'
+                + f' {2 * target_pokemon.level}',
                 is_possible=2 * target_pokemon.level <= POKEMON_LEVEL_CAP,
             ),
             CatchScenario(
@@ -122,8 +129,10 @@ def get_catch_scenarios(target_pokemon: Pokemon) -> list[CatchScenario]:
                 poke_ball=PokeBall.MOON_BALL,
                 catch_rate=0x1000,
                 condition='Target Pokémon does not evolve with Moon Stone',
-                is_possible=not(target_pokemon.evolution is not None
-                and target_pokemon.evolution.item == 'Moon Stone'),
+                is_possible=not (
+                    target_pokemon.evolution is not None
+                    and target_pokemon.evolution.item == 'Moon Stone'
+                ),
             ),
             CatchScenario(
                 poke_ball=PokeBall.NET_BALL,

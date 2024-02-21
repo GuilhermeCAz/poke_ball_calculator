@@ -6,6 +6,9 @@ import dotenv
 dotenv.load_dotenv()
 
 ROOT = pathlib.Path(__file__).resolve().parent
+ASSETS_URL = (
+    'https://raw.githubusercontent.com/marcelogcardozo/pokeballs/main/assets'
+)
 
 CURRENT_LAST_DEX_NUMBER = 1025
 POKEMON_LEVEL_CAP = 100
