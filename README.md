@@ -1,7 +1,7 @@
 # Pokéball Calculator
 
 ## Example Input
-### ![alt text](https://github.com/msikma/pokesprite/blob/master/icons/pokemon/regular/groudon.png?raw=true "Groudon") **Groudon** | Level 17
+### ![alt text](https://github.com/msikma/pokesprite/blob/master/icons/pokemon/regular/groudon.png?raw=true "Groudon") **Groudon** | Level 50
 
 ### Pokémon Base Stats (obtained from source)
 - HP: 100
@@ -24,17 +24,17 @@
 
 ## Example Result (considering 1 HP and asleep or frozen)
 - ![alt text](https://www.serebii.net/games/balls/heavyball.png "Heavy Ball") **Heavy Ball**
-    - **Catch Rate**: 33%
-    - **Condition**: None.
+    - **Catch Rate**: 47.82%
+    - **Condition**: None
+- ![alt text](https://www.serebii.net/games/balls/quickball.png "Quick Ball") **Quick Ball**
+    - **Catch Rate**: 26.37%
+    - **Condition**: 0 turns since battle started
 - ![alt text](https://www.serebii.net/games/balls/levelball.png "Level Ball") **Level Ball**
-    - **Catch Rate**: 18%
-    - **Condition**: User's Pokémon must be at least level 68.
-- ![alt text](https://www.serebii.net/games/balls/duskball.png "Dusk Ball") **Dusk Ball**
-    - **Catch Rate**: 8%
-    - **Condition**: Must be caught at night or in caves.
+    - **Catch Rate**: 22.22%
+    - **Condition**: User Pokémon Level = 100
+- ![alt text](https://www.serebii.net/games/balls/dreamball.png "Dream Ball") **Dream Ball**
+    - **Catch Rate**: 22.22%
+    - **Condition**: Target Pokémon is asleep
 - ![alt text](https://www.serebii.net/games/balls/repeatball.png "Repeat Ball") **Repeat Ball**
-    - **Catch Rate**: 6%
-    - **Condition**: Must have already been registered.
-- ![alt text](https://www.serebii.net/games/balls/nestball.png "Nest Ball") **Nest Ball**
-    - **Catch Rate**: 5%
-    - **Condition**: Already fulfilled (level < 19).
+    - **Catch Rate**: 19.96%
+    - **Condition**: Target Pokémon has been registered
