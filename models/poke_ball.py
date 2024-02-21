@@ -1,6 +1,8 @@
 """Defines a Pokéball class and its attributes."""
 from enum import StrEnum, auto
 
+from settings import ASSETS_URL
+
 
 class PokeBall(StrEnum):
     POKÉ_BALL = auto()
@@ -34,4 +36,4 @@ class PokeBall(StrEnum):
 
     def __init__(self, value: str) -> None:
         self._value_ = value.replace('_', ' ').title()
-        self.image = f'https://github.com/marcelogcardozo/pokeballs/blob/main/assets/items/{value.lower()}.png?raw=true'
+        self.image = f'{ASSETS_URL}/items/{value.lower()}.png'

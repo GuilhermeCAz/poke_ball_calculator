@@ -1,17 +1,18 @@
 """Defines a Pokémon class and its attributes."""
+import asyncio
+import contextlib
 import itertools
 import math
-import pathlib
 from dataclasses import dataclass
 from decimal import Decimal
 from enum import Enum, StrEnum, auto
 
+import aiohttp
 from pydantic import BaseModel
 
 from models.exceptions import InexistentTypeError
-from settings import ROOT
+from settings import ASSETS_URL
 
-IMAGE_FOLDER = ROOT / 'assets' / 'pokemon'
 FORM_VARIANTS = tuple(str(i).zfill(3) for i in range(0, 20))
 GENDER_VARIANTS = ('uk', 'mf', 'fd', 'md', 'fo', 'mo')
 GIGANTAMAX_VARIANTS = ('n', 'g')
@@ -118,8 +119,31 @@ class Pokemon(BaseModel):
         return self._get_hp_by_iv(31)
 
     @property
-    def images(self) -> list[pathlib.Path]:
-        _images: list[pathlib.Path] = []
+    def images(self) -> list[str]:
+        return asyncio.run(self.get_images())
+
+    async def get_images(self) -> list[str]:
+        image_urls = self.generate_image_urls()
+        async with aiohttp.ClientSession() as session:
+            tasks = [
+                self.check_image_existence(session, image_url)
+                for image_url in image_urls
+            ]
+            results = await asyncio.gather(*tasks)
+            return [url for url, exists in zip(image_urls, results) if exists]
+
+    async def check_image_existence(
+        self, session: aiohttp.ClientSession, url: str
+    ) -> bool:
+        with contextlib.suppress(TimeoutError):
+            async with session.get(url, timeout=30) as response:
+                if response.ok:
+                    return True
+
+        return False
+
+    def generate_image_urls(self) -> list[str]:
+        image_urls: list[str] = []
         for form, gender, gmax, shiny in itertools.product(
             FORM_VARIANTS, GENDER_VARIANTS, GIGANTAMAX_VARIANTS, SHINY_VARIANTS
         ):
@@ -127,11 +151,10 @@ class Pokemon(BaseModel):
                 f'poke_capture_{str(self.dex_no).zfill(4)}_'
                 f'{form}_{gender}_{gmax}_00000000_f_{shiny}.png'
             )
-            _image = IMAGE_FOLDER / filename
-            if _image.exists():
-                _images.append(_image)
+            image_url = f'{ASSETS_URL}/pokemon/{filename}'
+            image_urls.append(image_url)
 
-        return _images
+        return image_urls
 
 
 def select_pokemon_type(type_str: str) -> PokemonType:
