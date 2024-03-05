@@ -1,0 +1,23 @@
+#catch-rate-calculator {
+    text-align: center;
+}
+
+table.dataframe {
+    text-align: center;
+    font: Helvetica, Garamond, sans-serif;
+    border: 1px solid #0A152B;
+    background: #103973;
+}
+
+table.dataframe th {
+    background: #0A152B;
+    column-span: none;
+}
+
+table.dataframe tr:nth-child(even) {
+    background: #295A94;
+}
+
+table.dataframe td img {
+    height: 35px;
+}

@@ -1,5 +1,4 @@
 """Contains scraper exception definitions."""
-import pathlib
 
 
 class InexistentTypeError(ValueError):
@@ -36,12 +35,12 @@ class NoMatchFoundError(Exception):
 class NoPaletteFoundError(Exception):
     """Error raised when no palette is found in quantized image."""
 
-    def __init__(self, image_path: pathlib.Path) -> None:
+    def __init__(self, image_path: str) -> None:
         super().__init__(f'No palette found for image: {image_path}.')
 
 
 class NoPokemonFoundError(Exception):
     """Error raised when no Pokemon matches are found for dex number passed."""
 
-    def __init__(self, dex_no: int) -> None:
-        super().__init__(f"{dex_no} didn't return any Pokémon.")
+    def __init__(self, *args: str | int) -> None:
+        super().__init__(f'No Pokémon found with {args}.')

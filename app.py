@@ -1,41 +1,26 @@
+import asyncio
 import pathlib
-import re
 
 import pandas as pd
 import streamlit as st
 
 from models.poke_ball import PokeBall
-from models.pokemon import Pokemon
-from settings import ROOT
+from models.pokemon import Pokemon, PokemonStatus
+from settings import CURRENT_LAST_DEX_NUMBER, ROOT
 from src.calc import (
     calculate_modified_catch_rates,
     calculate_overall_catch_rate,
 )
-from src.misc import generate_pokemon_sav, get_all_pokemon, get_pokemon
-
-
-def get_image_labels(pokemon_images: list[str]) -> dict[str, str]:
-    pattern = r'poke_capture_\d{4}_(\d{3})_(\w{2})_(\w)_\d{8}_f_(\w).png'
-    image_labels: dict[str, str] = {}
-    for image_url in pokemon_images:
-        match = re.search(pattern, image_url)
-        if match:
-            form, gender, gmax, shiny = match.groups()
-            label = f'Form {int(form) + 1}'
-            if gender == 'fd':
-                label += ' | ♀'
-            elif gender == 'md':
-                label += ' | ♂'
-            if gmax == 'g':
-                label += ' | Gmax'
-            if shiny == 'r':
-                label += ' | Shiny'
-            image_labels[label] = image_url
-
-    return image_labels
+from src.misc import (
+    generate_pokemon_sav,
+    get_all_pokemon,
+    get_pokemon_by_dex_no,
+    get_pokemon_by_name,
+)
 
 
 def get_catch_rates(pokemon: Pokemon) -> pd.DataFrame:
+    # add max_iv catch rates?
     catch_rates_data: list[dict] = []
     for min_iv_scenario, min_iv_rate in calculate_modified_catch_rates(
         pokemon, pokemon.min_hp
@@ -44,10 +29,10 @@ def get_catch_rates(pokemon: Pokemon) -> pd.DataFrame:
 
         catch_rates_data.append(
             {
-                'Image': min_iv_scenario.poke_ball.image,
+                'Image': f'<img src="{min_iv_scenario.poke_ball.image}"',
                 'Poké Ball': min_iv_scenario.poke_ball.value,
-                'Condition': min_iv_scenario.condition,
-                'Catch Rate': catch_rate * 100,
+                'Condition': min_iv_scenario.condition or '',
+                'Catch Rate': catch_rate,
             }
         )
     return pd.DataFrame(catch_rates_data)
@@ -62,7 +47,7 @@ def format_catch_rates(catch_rates: pd.DataFrame) -> pd.DataFrame:
 
     min_turns: pd.DataFrame = catch_rates[
         (catch_rates['Poké Ball'] == 'Timer Ball')
-        & (catch_rates['Catch Rate'] == 100)  # noqa: PLR2004
+        & (catch_rates['Catch Rate'] == 1)
     ]['Turns'].min()
 
     filtered_catch_rates = catch_rates[
@@ -80,32 +65,114 @@ def format_catch_rates(catch_rates: pd.DataFrame) -> pd.DataFrame:
     return sorted_catch_rates.drop(columns='Turns')
 
 
-def main() -> None:
+def style_catch_rates(catch_rates: pd.DataFrame) -> str:
+    return catch_rates.to_html(
+        index=False,
+        float_format=lambda x: f'{x:.2%}',
+        justify='center',
+        classes='styled-table',
+        escape=False,
+    )
+
+
+def set_basic_configuration() -> None:
     st.set_page_config(
         layout='wide',
         page_title='Pokémon Catch Rate Calculator',
         page_icon=PokeBall.LEVEL_BALL.image,
+        initial_sidebar_state='collapsed',
     )
+
+    with open(ROOT / 'css' / 'styles.css') as css:
+        st.markdown(
+            '<style>' + css.read() + '</style>', unsafe_allow_html=True
+        )
 
     st.title('Catch Rate Calculator')
 
-    if not pathlib.Path.exists(ROOT / 'pokemon_list.sav'):
-        generate_pokemon_sav()
+    if not pathlib.Path.exists(ROOT / 'data' / 'pokemon_list.sav'):
+        asyncio.run(generate_pokemon_sav())
 
+
+def set_pokemon_by_dex_no() -> None:
+    dex_no = st.session_state.get('dex_no')
+    if not dex_no:
+        st.session_state['pokemon_name'] = None
+        return
+
+    pokemon = get_pokemon_by_dex_no(
+        dex_no,
+        int(st.session_state['level']),
+    )
+    st.session_state['pokemon'] = pokemon
+    st.session_state['pokemon_name'] = pokemon.name
+
+
+def set_pokemon_by_name() -> None:
+    pokemon_name = st.session_state.get('pokemon_name')
+    if not pokemon_name:
+        st.session_state['dex_no'] = None
+        return
+
+    pokemon = get_pokemon_by_name(
+        pokemon_name,
+        int(st.session_state['level']),
+    )
+    st.session_state['pokemon'] = pokemon
+    st.session_state['dex_no'] = pokemon.dex_no
+
+
+def add_sidebar_widgets() -> None:
+    st.sidebar.selectbox(
+        label='Status',
+        options=[
+            f'{name.title()} ({enum.value/4096}x)'
+            for name, enum in PokemonStatus.__members__.items()
+        ],
+        key='status',
+        disabled=True,
+    )
+    st.sidebar.slider(
+        label='HP',
+        min_value=1,
+        max_value=100,
+        step=1,
+        format=None,
+        key='hp',
+        help=None,
+    )
+
+
+def main() -> None:
+    set_basic_configuration()
     pokemon_list = get_all_pokemon()
 
-    form_columns = st.columns([6, 5, 2, 5, 5, 1])
-    labels = [f'{pokemon.dex_no} - {pokemon.name}' for pokemon in pokemon_list]
+    image_columns = st.columns([3, 1, 3])
+    image_box = image_columns[1].empty()
 
-    form_columns[1].selectbox(
+    form_columns = st.columns([4, 3, 5, 2, 5, 5])
+    pokemon_names = [pokemon.name for pokemon in pokemon_list]
+
+    form_columns[1].number_input(
+        label='National Dex Number',
+        min_value=1,
+        max_value=CURRENT_LAST_DEX_NUMBER,
+        value=None,
+        step=1,
+        key='dex_no',
+        on_change=set_pokemon_by_dex_no,
+    )
+
+    form_columns[2].selectbox(
         label='Pokémon',
-        options=labels,
+        options=pokemon_names,
         index=None,
-        key='pokémon',
+        key='pokemon_name',
+        on_change=set_pokemon_by_name,
         placeholder='Select a Pokémon',
     )
 
-    form_columns[2].number_input(
+    form_columns[3].number_input(
         label='Level',
         min_value=1,
         max_value=100,
@@ -114,7 +181,7 @@ def main() -> None:
         key='level',
     )
 
-    form_box = form_columns[3].empty()
+    form_box = form_columns[4].empty()
     form_box.selectbox(
         label='Form',
         options=[],
@@ -122,37 +189,26 @@ def main() -> None:
         help='You must select a Pokémon first.',
     )
 
-    while not (
-        st.session_state.get('pokémon') and st.session_state.get('level')
-    ):
-        pass
+    add_sidebar_widgets()
 
-    dex_no = int(st.session_state['pokémon'].split(' - ')[0])
-    pokemon = get_pokemon(dex_no, int(st.session_state['level']))
+    pokemon: Pokemon | None = st.session_state.get('pokemon')
 
-    image_labels = get_image_labels(pokemon.images)
+    if pokemon:
+        form_box.selectbox(
+            label='Form',
+            options=[form.label for form in pokemon.forms],
+            key='form',
+        )
 
-    form_box.selectbox(
-        label='Form',
-        options=image_labels.keys(),
-        key='form',
-    )
+        image_box.image(pokemon.images[st.session_state['form']])
 
-    image_columns = st.columns([3, 1, 3])
-    image_columns[1].image(image_labels[st.session_state['form']])
+        catch_rates = get_catch_rates(pokemon)
+        filtered_catch_rates = format_catch_rates(catch_rates)
+        styled_catch_rates = style_catch_rates(filtered_catch_rates)
 
-    catch_rates = get_catch_rates(pokemon)
-    filtered_catch_rates = format_catch_rates(catch_rates)
+        data_columns = st.columns([1, 3, 1])
 
-    st.dataframe(
-        filtered_catch_rates,
-        hide_index=True,
-        column_config={
-            'Image': st.column_config.ImageColumn(),
-            'Catch Rate': st.column_config.NumberColumn(format='%.2f%%'),
-        },
-        use_container_width=True,
-    )
+        data_columns[1].markdown(styled_catch_rates, unsafe_allow_html=True)
 
 
 if __name__ == '__main__':

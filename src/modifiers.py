@@ -34,7 +34,7 @@ def get_species_modifier(
     if poke_ball == PokeBall.HEAVY_BALL:
         for (min_weight, max_weight), modifier in HEAVY_BALL_RANGES.items():
             if min_weight < weight <= max_weight:
-                return catch_rate + modifier
+                return max(catch_rate + modifier, 1)
 
         return catch_rate + 30
 
@@ -75,5 +75,4 @@ def get_critical_catch_modifier(registered_pokemon_on_dex: int) -> int:
         if min_registered <= registered_pokemon_on_dex <= max_registered:
             return value
 
-    # to-do: unclear if capped at 400 registered or not.
     return 10240

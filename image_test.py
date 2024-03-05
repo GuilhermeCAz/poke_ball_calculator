@@ -1,12 +1,11 @@
 import math
-import pathlib
 from typing import NamedTuple
 
 from PIL import Image
 
 from models.exceptions import NoPaletteFoundError
 from src.calc import calculate_modified_catch_rates
-from src.misc import get_pokemon
+from src.misc import get_pokemon_by_dex_no
 
 
 class RGBA(NamedTuple):
@@ -61,9 +60,7 @@ def get_weighted_color_similarity(
     return total_diff / len(color_combos)
 
 
-def get_predominant_colors(
-    image_path: pathlib.Path,
-) -> list[Color]:
+def get_predominant_colors(image_path: str) -> list[Color]:
     """
     Get list of most predominant colors on image, excluding transparent ones.
 
@@ -94,7 +91,7 @@ def get_predominant_colors(
 
 
 def main() -> None:
-    pokemon = get_pokemon(dex_no=443, level=100)
+    pokemon = get_pokemon_by_dex_no(dex_no=23, level=100)
     pokemon_colors = get_predominant_colors(pokemon.images[0])
     print(f'Best scenarios for {pokemon.name} at level {pokemon.level}:')
     min_weight = float('inf')

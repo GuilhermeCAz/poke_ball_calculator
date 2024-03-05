@@ -92,7 +92,9 @@ def calculate_modified_catch_rates(
 
 
 def calculate_critical_catch_value(
-    registered_pokemon_on_dex: int, modified_catch_rate: int
+    registered_pokemon_on_dex: int,
+    modified_catch_rate: int,
+    catching_charm: bool = True,
 ) -> int:
     """Return value used to evaluate whether a catch is critical."""
     critical_catch_modifier = modifiers.get_critical_catch_modifier(
@@ -100,6 +102,7 @@ def calculate_critical_catch_value(
     )
     return math.floor(
         special_round(critical_catch_modifier * modified_catch_rate)
+        * (2 if catching_charm else 1)
         * 715827883
         / (4294967296 * 4096)
     )

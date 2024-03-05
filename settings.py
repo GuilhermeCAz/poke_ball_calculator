@@ -1,4 +1,5 @@
 """Settings."""
+
 import pathlib
 
 import dotenv

@@ -1,4 +1,5 @@
 """Gets all Pokémon information from SciresM's GitHub Gist."""
+
 import contextlib
 import re
 from decimal import Decimal
@@ -9,6 +10,7 @@ from models.exceptions import NoMatchFoundError
 from models.pokemon import (
     Pokemon,
     PokemonEvolution,
+    PokemonForm,
     PokemonMove,
     PokemonStats,
     select_pokemon_type,
@@ -50,7 +52,9 @@ def split_text(input_str: str) -> list[str]:
     return re.split(r'\n\n======\n', input_str)[1:]
 
 
-def parse_pokemon(snippet: str) -> Pokemon:
+def parse_pokemon(
+    snippet: str, forms_dict: dict[int, list[PokemonForm]]
+) -> Pokemon:
     """
     Extract and format data in the snippet.
 
@@ -165,23 +169,5 @@ def parse_pokemon(snippet: str) -> Pokemon:
         level_up_moves=level_up_moves,
         tm_learn_moves=tm_learn_moves,
         evolution=evolution,
+        forms=forms_dict.get(dex_no, []),
     )
-
-
-def main() -> None:
-    """Create list of Pokemon instances obtained from SciresM's GitHub Gist."""
-    text = get_text()
-    snippets = split_text(text)
-
-    pokemon_list: list[Pokemon] = []
-    for snippet in snippets:
-        pokemon_list.append(parse_pokemon(snippet))
-
-    import pickle
-
-    with open('pokemon_list.sav', 'wb') as f:
-        pickle.dump(pokemon_list, f)
-
-
-if __name__ == '__main__':
-    main()
