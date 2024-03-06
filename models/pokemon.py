@@ -199,7 +199,11 @@ async def get_existing_forms_by_dex_no(dex_no: int) -> list[PokemonForm]:
             break
 
         existing_forms.extend(
-            [form for form, exists in zip(forms, results) if exists]
+            [
+                form
+                for form, exists in zip(forms, results, strict=False)
+                if exists
+            ]
         )
 
     return existing_forms
@@ -222,7 +226,7 @@ async def get_all_existing_forms() -> dict[int, list[PokemonForm]]:
             return_exceptions=True,
         )
 
-    for form, exists in zip(forms, results):
+    for form, exists in zip(forms, results, strict=False):
         if exists:
             forms_dict[form.dex_no].append(form)
 

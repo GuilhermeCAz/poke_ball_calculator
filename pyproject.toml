@@ -1,3 +1,15 @@
+[project]
+name = "pokeball-calculator"
+version = "1.0.0"
+readme = "README.md"
+requires-python = ">=3.12"
+license = { file = "LICENSE" }
+authors = [{ "name" = "GuilhermeCAz" }, { "name" = "marcelogcardozo" }]
+dependencies = ["aiohttp", "pillow", "pydantic", "streamlit"]
+
+[project.optional-dependencies]
+dev = ["mypy", "pandas-stubs", "ruff", "types-Pillow", "types-requests"]
+
 [tool.ruff]
 line-length = 79
 
@@ -7,28 +19,28 @@ quote-style = "single"
 [tool.ruff.lint]
 select = [
     "ANN", # flake8-annotations
-    "B", # flake8-bugbear
-    "C4", # flake8-comprehensions
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
     # "D", # pydocstyle
-    "E", # pycodestyle error
-    "F", # flake8
-    "I", # isort
-    "N", # pep8-naming
-    "PD", # pandas-vet
-    "PL", # Pylint
+    "E",   # pycodestyle error
+    "F",   # flake8
+    "I",   # isort
+    "N",   # pep8-naming
+    "PD",  # pandas-vet
+    "PL",  # Pylint
     "RET", # flake8-return
     "RUF", # ruff-specific rules
-    "S", # flake8-bandit
+    "S",   # flake8-bandit
     "SIM", # flake8-simplify
     "TCH", # flake8-type-checking
     "TID", # flake8-tidy-imports
     "TRY", # tryceratops 
-    "UP", # pyupgrade
-    "W" # pycodestyle warning
+    "UP",  # pyupgrade
+    "W",   # pycodestyle warning
 ]
 
 extend-ignore = [
     "ANN101", # missing-type-self: deprecated
-    "D203", # one-blank-line-before-class: clashes with D211
-    "D212" # multi-line-summary-first-line: clashes with D213
+    "D203",   # one-blank-line-before-class: clashes with D211
+    "D212",   # multi-line-summary-first-line: clashes with D213
 ]

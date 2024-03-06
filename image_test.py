@@ -92,7 +92,8 @@ def get_predominant_colors(image_path: str) -> list[Color]:
 
 def main() -> None:
     pokemon = get_pokemon_by_dex_no(dex_no=23, level=100)
-    pokemon_colors = get_predominant_colors(pokemon.images[0])
+    form = pokemon.forms[0]
+    pokemon_colors = get_predominant_colors(pokemon.images[form.label])
     print(f'Best scenarios for {pokemon.name} at level {pokemon.level}:')
     min_weight = float('inf')
     min_ball = None

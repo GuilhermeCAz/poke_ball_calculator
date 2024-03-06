@@ -1,4 +1,5 @@
 """Defines a Pokéball class and its attributes."""
+
 from enum import StrEnum, auto
 
 from settings import ASSETS_URL

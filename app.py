@@ -165,7 +165,7 @@ def main() -> None:
 
     form_columns[2].selectbox(
         label='Pokémon',
-        options=pokemon_names,
+        options=[pokemon.name for pokemon in pokemon_list],
         index=None,
         key='pokemon_name',
         on_change=set_pokemon_by_name,
