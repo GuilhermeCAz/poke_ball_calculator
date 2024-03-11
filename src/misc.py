@@ -38,7 +38,7 @@ async def generate_pokemon_sav() -> None:
         pickle.dump(pokemon_list, f)
 
 
-def get_pokemon_by_dex_no(dex_no: int, level: int) -> Pokemon:
+def get_pokemon_by_dex_no(dex_no: int, level: int) -> Pokemon | None:
     with open(ROOT / 'data' / 'pokemon_list.sav', 'rb') as f:
         pokemon_list = pickle.load(f)  # noqa: S301
 
@@ -51,7 +51,8 @@ def get_pokemon_by_dex_no(dex_no: int, level: int) -> Pokemon:
                 pokemon.level = level
                 return pokemon
 
-    raise NoPokemonFoundError(dex_no)
+    return None
+    # raise NoPokemonFoundError(dex_no)
 
 
 def get_pokemon_by_name(name: str, level: int) -> Pokemon:

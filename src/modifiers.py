@@ -8,14 +8,13 @@ from settings import (
     BADGE_THRESHOLDS,
     CATCHING_POWER_MODIFIERS,
     CRITICAL_CATCH_RANGES,
-    CURRENT_HP,
     DARK_GRASS_RANGES,
     HEAVY_BALL_RANGES,
 )
 
 
-def get_hp_modifier(hp: int) -> int:
-    return math.floor((3 * hp - 2 * CURRENT_HP) * 4096 + 0.5)
+def get_hp_modifier(hp: int, current_hp: int = 1) -> int:
+    return math.floor((3 * hp - 2 * current_hp) * 4096 + 0.5)
 
 
 def get_dark_grass_modifier(registered_pokemon_on_dex: int) -> int:
@@ -49,15 +48,15 @@ def get_badge_modifier(badges: int, level: int) -> float:
     return 4096
 
 
-def get_status_modifier(status: PokemonStatus) -> int:
-    return status.value
+def get_status_modifier(status: PokemonStatus | None) -> int:
+    if status:
+        return status.value
+    return 4096
 
 
 def get_capture_value_coefficient_modifier(
     catching_power_level: int, backstrike: bool
 ) -> float:
-    # if static_encounter (user input):
-    #   catching_power_level = 0; backstrike = False
     backstrike_modifier = 2 if backstrike else 1
     if catching_power_level in CATCHING_POWER_MODIFIERS:
         return (

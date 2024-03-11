@@ -1,4 +1,5 @@
 import math
+from dataclasses import dataclass
 
 from models.catch_scenario import CatchScenario
 from models.pokemon import Pokemon, PokemonStatus
@@ -11,20 +12,38 @@ def special_round(value: float) -> int:
     return math.floor((value + 2048) / 4096)
 
 
+@dataclass
+class BattleVariables:
+    target_current_hp: int
+    target_status: PokemonStatus | None
+    backstrike: bool
+    catching_power_level: int
+
+
+@dataclass
+class GameVariables:
+    badges: int
+    registered_pokemon: int
+    catching_charm: bool
+
+
 def calculate_modified_catch_rates(
     pokemon: Pokemon,
     hp: int,
-    catching_power_level: int = 0,
-    backstrike: bool = False,
+    battle_variables: BattleVariables,
+    game_variables: GameVariables,
 ) -> list[tuple[CatchScenario, int]]:
     def _get_constant_modifiers() -> tuple[int, int, float, int, float]:
         return (
-            modifiers.get_hp_modifier(hp),
-            modifiers.get_dark_grass_modifier(601),
-            modifiers.get_badge_modifier(8, pokemon.level),
-            modifiers.get_status_modifier(PokemonStatus.ASLEEP),
+            modifiers.get_hp_modifier(hp, battle_variables.target_current_hp),
+            modifiers.get_dark_grass_modifier(
+                game_variables.registered_pokemon
+            ),
+            modifiers.get_badge_modifier(game_variables.badges, pokemon.level),
+            modifiers.get_status_modifier(battle_variables.target_status),
             modifiers.get_capture_value_coefficient_modifier(
-                catching_power_level, backstrike
+                battle_variables.catching_power_level,
+                battle_variables.backstrike,
             ),
         )
 
@@ -92,8 +111,8 @@ def calculate_modified_catch_rates(
 
 
 def calculate_critical_catch_value(
-    registered_pokemon_on_dex: int,
     modified_catch_rate: int,
+    registered_pokemon_on_dex: int = 843,
     catching_charm: bool = True,
 ) -> int:
     """Return value used to evaluate whether a catch is critical."""
@@ -131,8 +150,14 @@ def calculate_successful_catch_odds(
     return (successful_shake_odds) ** 4
 
 
-def calculate_overall_catch_rate(modified_catch_rate: int) -> float:
-    ccv = calculate_critical_catch_value(601, modified_catch_rate)
+def calculate_overall_catch_rate(
+    modified_catch_rate: int,
+    registered_pokemon: int = 843,
+    catching_charm: bool = True,
+) -> float:
+    ccv = calculate_critical_catch_value(
+        modified_catch_rate, registered_pokemon, catching_charm
+    )
     critical_catch_odds = calculate_critical_catch_odds(ccv)
 
     shake_value = calculate_shake_value(modified_catch_rate)

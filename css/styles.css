@@ -4,9 +4,9 @@
 
 table.dataframe {
     text-align: center;
-    font: Helvetica, Garamond, sans-serif;
-    border: 1px solid #0A152B;
+    border: 2px solid #0A152B;
     background: #103973;
+    width: 100%;
 }
 
 table.dataframe th {
@@ -19,5 +19,5 @@ table.dataframe tr:nth-child(even) {
 }
 
 table.dataframe td img {
-    height: 35px;
+    height: 32px;
 }

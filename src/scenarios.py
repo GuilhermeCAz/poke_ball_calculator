@@ -5,7 +5,7 @@ from models.poke_ball import PokeBall
 from models.pokemon import Pokemon, PokemonType
 from settings import (
     FAST_BALL_SPEED_MIN,
-    GENDER_UNKNOWN_RATIO,
+    GENDER_UNKNOWN_VALUE,
     NEST_BALL_LEVEL_MIN,
     POKEMON_LEVEL_CAP,
     UB_DEX_NUMBERS,
@@ -116,7 +116,7 @@ def get_catch_scenarios(target_pokemon: Pokemon) -> list[CatchScenario]:
                 condition='User Pokémon Species is the same as Target,'
                 ' but opposite gender',
                 is_possible=target_pokemon.gender_ratio
-                != GENDER_UNKNOWN_RATIO,
+                != GENDER_UNKNOWN_VALUE,
             ),
             CatchScenario(
                 poke_ball=PokeBall.MOON_BALL,
