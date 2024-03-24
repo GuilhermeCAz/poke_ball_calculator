@@ -49,7 +49,7 @@ def get_catch_scenarios(target_pokemon: Pokemon) -> list[CatchScenario]:
                 CatchScenario(
                     poke_ball=PokeBall.TIMER_BALL,
                     catch_rate=min(turns * 1229 + 0x1000, 0x4000),
-                    condition=f'{turns} {'turn' if turns == 1 else 'turns'}'
+                    condition=f'{turns} {"turn" if turns == 1 else "turns"}'
                     ' since battle started',
                     # is_condition_true=user information required
                 )
