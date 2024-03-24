@@ -13,6 +13,7 @@ def add_sidebar_widgets() -> None:
                 for name, enum in PokemonStatus.__members__.items()
             ]
             + ['No Status (1x)'],
+            index=5,
             key='status',
         )
 
@@ -24,6 +25,7 @@ def add_sidebar_widgets() -> None:
                 '< 50% (yellow bar)',
                 '<= 100% (green bar)',
             ],
+            index=3,
             key='hp',
         )
 
