@@ -1,18 +1,11 @@
-import asyncio
 import math
-import pathlib
 
 import streamlit as st
 
 from models.poke_ball import PokeBall
-from models.pokemon import PokemonStatus
+from models.pokemon import Pokemon, PokemonStatus
 from settings import ROOT
 from src.calc import BattleVariables, GameVariables
-from src.misc import (
-    generate_pokemon_sav,
-    get_pokemon_by_dex_no,
-    get_pokemon_by_name,
-)
 
 
 def set_basic_configuration() -> None:
@@ -30,38 +23,31 @@ def set_basic_configuration() -> None:
 
     st.title('Catch Rate Calculator')
 
-    if not pathlib.Path.exists(ROOT / 'data' / 'pokemon_list.sav'):
-        asyncio.run(generate_pokemon_sav())
-
 
 def set_pokemon_by_dex_no() -> None:
-    dex_no = st.session_state.get('dex_no')
+    dex_no: int | None = st.session_state.get('dex_no')
+    level: int = st.session_state.get('level', 1)
     if not dex_no:
         st.session_state['pokemon_name'] = None
         return
 
-    pokemon = get_pokemon_by_dex_no(
-        dex_no,
-        int(st.session_state['level']),
-    )
+    pokemon = Pokemon(dex_no, level)
     if pokemon:
         st.session_state['pokemon'] = pokemon
-        st.session_state['pokemon_name'] = pokemon.name
+        st.session_state['pokemon_name'] = pokemon.name.title()
     else:
         st.session_state['pokemon'] = None
         st.session_state['pokemon_name'] = None
 
 
 def set_pokemon_by_name() -> None:
-    pokemon_name = st.session_state.get('pokemon_name')
+    pokemon_name: str | None = st.session_state.get('pokemon_name')
+    level: int = st.session_state.get('level', 1)
     if not pokemon_name:
         st.session_state['dex_no'] = None
         return
 
-    pokemon = get_pokemon_by_name(
-        pokemon_name,
-        int(st.session_state['level']),
-    )
+    pokemon = Pokemon(pokemon_name.lower(), level)
     st.session_state['pokemon'] = pokemon
     st.session_state['dex_no'] = pokemon.dex_no
 

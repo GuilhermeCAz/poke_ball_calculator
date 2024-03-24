@@ -10,7 +10,7 @@ from app.config import (
 from app.dataframe import format_catch_rates, get_catch_rates
 from app.sidebar import add_sidebar_widgets
 from settings import CURRENT_LAST_DEX_NUMBER
-from src.misc import get_all_pokemon
+from src.api import get_pokemon_names
 
 if TYPE_CHECKING:
     from models.pokemon import Pokemon
@@ -20,10 +20,8 @@ def main() -> None:
     set_basic_configuration()
     add_sidebar_widgets()
 
-    pokemon_list = get_all_pokemon()
-
-    image_columns = st.columns([2, 1, 2])
-    image_box = image_columns[1].empty()
+    image_columns = st.columns([1, 1, 1, 1, 1])
+    image_box = image_columns[2].empty()
 
     type_columns = st.columns([5, 1, 5])
     type_box = type_columns[1].empty()
@@ -37,12 +35,14 @@ def main() -> None:
         value=None,
         step=1,
         key='dex_no',
+        help='Some Pokémon are not available to catch on Scarlet/Violet. '
+        'Their catch rates are only hypothetical, based on previous games.',
         on_change=set_pokemon_by_dex_no,
     )
 
     form_columns[1].selectbox(
         label='Pokémon Name',
-        options=[pokemon.name for pokemon in pokemon_list],
+        options=get_pokemon_names(),
         index=None,
         key='pokemon_name',
         on_change=set_pokemon_by_name,
@@ -68,7 +68,7 @@ def main() -> None:
     pokemon: Pokemon | None = st.session_state.get('pokemon')
 
     if pokemon:
-        image_box.image(pokemon.images[pokemon.forms[0].label])
+        image_box.image(pokemon.sprites.official_artwork.default)
         type_box.image([type_.url for type_ in pokemon.types])
 
         button_box.button(

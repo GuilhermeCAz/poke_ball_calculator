@@ -3,9 +3,7 @@
 import pathlib
 
 ROOT = pathlib.Path(__file__).resolve().parent
-ASSETS_URL = (
-    'https://raw.githubusercontent.com/marcelogcardozo/pokeballs/main/assets'
-)
+ASSETS_URL = 'https://raw.githubusercontent.com/marcelogcardozo/pokemon_calc_assets/main/'
 
 CURRENT_LAST_DEX_NUMBER = 1025
 POKEMON_LEVEL_CAP = 100
@@ -15,7 +13,7 @@ LOW_LEVEL_BONUS_THRESHOLD = 13
 FAST_BALL_SPEED_MIN = 100
 NEST_BALL_LEVEL_MIN = 30
 
-GENDER_UNKNOWN_VALUE = 255
+GENDER_UNKNOWN_VALUE = -1
 
 UB_DEX_NUMBERS = (793, 794, 795, 796, 797, 798, 799, 803, 804, 805, 806)
 

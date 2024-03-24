@@ -5,7 +5,7 @@
 table.dataframe {
     text-align: center;
     border: 2px solid #0A152B;
-    background: #103973;
+    background: #295A94;
     width: 100%;
 }
 
@@ -15,7 +15,7 @@ table.dataframe th {
 }
 
 table.dataframe tr:nth-child(even) {
-    background: #295A94;
+    background: #103973;
 }
 
 table.dataframe td img {

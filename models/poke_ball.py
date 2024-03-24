@@ -37,4 +37,4 @@ class PokeBall(StrEnum):
 
     def __init__(self, value: str) -> None:
         self._value_ = value.replace('_', ' ').title()
-        self.image = f'{ASSETS_URL}/items/{value.lower()}.png'
+        self.image = f'{ASSETS_URL}/pokeballs/{value.lower()}.png'

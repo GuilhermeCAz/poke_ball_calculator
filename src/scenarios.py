@@ -115,8 +115,7 @@ def get_catch_scenarios(target_pokemon: Pokemon) -> list[CatchScenario]:
                 catch_rate=0x8000,
                 condition='User Pokémon Species is the same as Target,'
                 ' but opposite gender',
-                is_possible=target_pokemon.gender_ratio
-                != GENDER_UNKNOWN_VALUE,
+                is_possible=target_pokemon.gender_rate != GENDER_UNKNOWN_VALUE,
             ),
             CatchScenario(
                 poke_ball=PokeBall.MOON_BALL,

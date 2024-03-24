@@ -1,9 +1,11 @@
 # Pokéball Calculator
 
 ## Example Input
+
 ### ![alt text](https://github.com/msikma/pokesprite/blob/master/icons/pokemon/regular/groudon.png?raw=true "Groudon") **Groudon** | Level 50
 
 ### Pokémon Base Stats (obtained from source)
+
 - HP: 100
 - Attack: 150
 - Defense: 140
@@ -12,6 +14,7 @@
 - Speed: 90
 
 ### Other Information (obtained from source)
+
 >- Dex Number: #383
 >- Type: Ground
 >- Abilities: Drought
@@ -23,6 +26,7 @@
 >- Base Catch Rate: 3
 
 ## Example Result (considering 1 HP and asleep or frozen)
+
 - ![alt text](https://www.serebii.net/games/balls/heavyball.png "Heavy Ball") **Heavy Ball**
     - **Catch Rate**: 47.82%
     - **Condition**: None
