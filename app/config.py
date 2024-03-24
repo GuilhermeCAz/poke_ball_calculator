@@ -13,7 +13,7 @@ def set_basic_configuration() -> None:
         layout='wide',
         page_title='Pokémon Catch Rate Calculator',
         page_icon=PokeBall.LEVEL_BALL.image,
-        initial_sidebar_state='collapsed',
+        initial_sidebar_state='expanded',
     )
 
     with open(ROOT / 'css' / 'styles.css') as css:
