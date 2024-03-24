@@ -84,8 +84,11 @@ def get_catch_scenarios(target_pokemon: Pokemon) -> list[CatchScenario]:
                 poke_ball=PokeBall.LEVEL_BALL,
                 catch_rate=0x8000,
                 condition='User Pokémon Level '
-                + f'{"=" if 4 * target_pokemon.level == POKEMON_LEVEL_CAP
-                    else ">="}'
+                + (
+                    '='
+                    if 4 * target_pokemon.level == POKEMON_LEVEL_CAP
+                    else '>='
+                )
                 + f' {4 * target_pokemon.level}',
                 is_possible=4 * target_pokemon.level <= POKEMON_LEVEL_CAP,
             ),
@@ -93,8 +96,11 @@ def get_catch_scenarios(target_pokemon: Pokemon) -> list[CatchScenario]:
                 poke_ball=PokeBall.LEVEL_BALL,
                 catch_rate=0x4000,
                 condition='User Pokémon Level '
-                + f'{"=" if 2 * target_pokemon.level == POKEMON_LEVEL_CAP
-                    else ">="}'
+                + (
+                    '='
+                    if 2 * target_pokemon.level == POKEMON_LEVEL_CAP
+                    else '>='
+                )
                 + f' {2 * target_pokemon.level}',
                 is_possible=2 * target_pokemon.level <= POKEMON_LEVEL_CAP,
             ),
