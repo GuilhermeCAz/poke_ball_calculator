@@ -52,6 +52,12 @@ def set_pokemon_by_name() -> None:
     st.session_state['dex_no'] = pokemon.dex_no
 
 
+def set_pokemon_level() -> None:
+    pokemon: Pokemon = st.session_state['pokemon']
+    pokemon.level = st.session_state['level']
+    st.session_state['pokemon'] = pokemon
+
+
 def get_current_hp(pokemon_hp: int) -> int:
     selected_hp = st.session_state['hp']
     hp_selectbox_dict: dict[str, float] = {

@@ -6,6 +6,7 @@ from app.config import (
     set_basic_configuration,
     set_pokemon_by_dex_no,
     set_pokemon_by_name,
+    set_pokemon_level,
 )
 from app.dataframe import format_catch_rates, get_catch_rates
 from app.sidebar import add_sidebar_widgets
@@ -56,6 +57,7 @@ def main() -> None:
         value=50,
         step=1,
         key='level',
+        on_change=set_pokemon_level,
     )
     button_box = form_columns[1].empty()
     button_box.button(
