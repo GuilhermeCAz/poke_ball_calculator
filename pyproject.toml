@@ -5,10 +5,16 @@ readme = "README.md"
 requires-python = ">=3.12"
 license = { file = "LICENSE" }
 authors = [{ "name" = "GuilhermeCAz" }, { "name" = "marcelogcardozo" }]
-dependencies = ["aiohttp", "pillow", "pydantic", "streamlit"]
+dependencies = ["streamlit"]
 
 [project.optional-dependencies]
-dev = ["mypy", "pandas-stubs", "ruff", "types-Pillow", "types-requests"]
+dev = ["mypy", "pandas-stubs", "pip-tools", "ruff", "types-requests"]
+
+[tool.pip-tools]
+strip-extras = true
+
+[tool.mypy]
+strict = true
 
 [tool.ruff]
 line-length = 79
@@ -17,30 +23,17 @@ line-length = 79
 quote-style = "single"
 
 [tool.ruff.lint]
-select = [
-    "ANN", # flake8-annotations
-    "B",   # flake8-bugbear
-    "C4",  # flake8-comprehensions
-    # "D", # pydocstyle
-    "E",   # pycodestyle error
-    "F",   # flake8
-    "I",   # isort
-    "N",   # pep8-naming
-    "PD",  # pandas-vet
-    "PL",  # Pylint
-    "RET", # flake8-return
-    "RUF", # ruff-specific rules
-    "S",   # flake8-bandit
-    "SIM", # flake8-simplify
-    "TCH", # flake8-type-checking
-    "TID", # flake8-tidy-imports
-    "TRY", # tryceratops 
-    "UP",  # pyupgrade
-    "W",   # pycodestyle warning
-]
+select = ["ALL"]
 
 extend-ignore = [
     "ANN101", # missing-type-self: deprecated
     "D203",   # one-blank-line-before-class: clashes with D211
     "D212",   # multi-line-summary-first-line: clashes with D213
+    "Q000",   # quotes: single quotes are preferred
+    "ARG",    # flake8-unused-arguments
+    "D",      # pydocstyle: removed during early development
+    "PIE796", # non-unique-enums
 ]
+
+[tool.ruff.lint.per-file-ignores]
+"tests.py" = ["S101"]
