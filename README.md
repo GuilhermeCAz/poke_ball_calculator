@@ -1,44 +1,60 @@
-# Pokéball Calculator
+# Poké Ball Calculator
 
-## Example Input
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python Version from PEP 621 TOML](https://img.shields.io/python/required-version-toml?tomlFilePath=https%3A%2F%2Fraw.githubusercontent.com%2FGuilhermeCAz%2Fpoke_ball_calculator%2Fmain%2Fpyproject.toml&logo=python&label=Python)](https://www.python.org/downloads/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-%23FF4B4B?logo=streamlit&labelColor=black)](https://streamlit.io/)
+[![Make](https://img.shields.io/badge/Make-%236D00CC?logo=make)](https://www.gnu.org/software/make/)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![Checked with mypy](https://www.mypy-lang.org/static/mypy_badge.svg)](https://mypy-lang.org/)
 
-### ![alt text](https://github.com/msikma/pokesprite/blob/master/icons/pokemon/regular/groudon.png?raw=true "Groudon") **Groudon** | Level 50
+## About
 
-### Pokémon Base Stats (obtained from source)
+Poké Ball Calculator was built on Python using Streamlit. It scrapes many resources from [PokéAPI](https://pokeapi.co/) and combines it with the Pokémon Scarlet and Violet (Gen IX) catch rate formula to return all the possible catching scenarios a trainer has when trying to catch a Pokémon.
 
-- HP: 100
-- Attack: 150
-- Defense: 140
-- Special Attack: 100
-- Special Defense: 90
-- Speed: 90
+## Description
 
-### Other Information (obtained from source)
+Poké Ball Calculator is a Python website that lists the catch rates of all Poké Balls for the selected Pokémon in the selected level.
 
->- Dex Number: #383
->- Type: Ground
->- Abilities: Drought
+All the user has to do is select the wild Pokémon desired, either by name or by dex number, and its current level.
 
->- Height: 3.50m
->- Weight: 950.00kg
->- Gender: Unknown
+With this tool, you can figure out what is the most efficient Poké Ball to use.
 
->- Base Catch Rate: 3
+For now, this application only calculates the catch rates of Scarlet and Violet Pokémon.
 
-## Example Result (considering 1 HP and asleep or frozen)
+![Poké Ball Calculator](https://raw.githubusercontent.com/GuilhermeCAz/poke_ball_calculator/main/assets/images/preview.png)
 
-- ![alt text](https://www.serebii.net/games/balls/heavyball.png "Heavy Ball") **Heavy Ball**
-    - **Catch Rate**: 47.82%
-    - **Condition**: None
-- ![alt text](https://www.serebii.net/games/balls/quickball.png "Quick Ball") **Quick Ball**
-    - **Catch Rate**: 26.37%
-    - **Condition**: 0 turns since battle started
-- ![alt text](https://www.serebii.net/games/balls/levelball.png "Level Ball") **Level Ball**
-    - **Catch Rate**: 22.22%
-    - **Condition**: User Pokémon Level = 100
-- ![alt text](https://www.serebii.net/games/balls/dreamball.png "Dream Ball") **Dream Ball**
-    - **Catch Rate**: 22.22%
-    - **Condition**: Target Pokémon is asleep
-- ![alt text](https://www.serebii.net/games/balls/repeatball.png "Repeat Ball") **Repeat Ball**
-    - **Catch Rate**: 19.96%
-    - **Condition**: Target Pokémon has been registered
+## Sidebar: Conditions
+
+The user can also use the sidebar to manipulate certain battle or game conditions which affect the catch rate.
+
+### Battle Conditions
+
+- [Status](https://bulbapedia.bulbagarden.net/wiki/Status_condition): Asleep, Frozen, Burned, Paralyzed, Poisoned, or No Status
+- [HP](https://bulbapedia.bulbagarden.net/wiki/HP): Exactly 1 Health Point, < 20%, < 50%, or <= 100%
+- [Backstrike](<https://bulbapedia.bulbagarden.net/wiki/Catch_rate#Capture_method_(Generation_IX)>): whether the battle started with a backstrike
+
+### Game Conditions
+
+- [Catching Charm](https://bulbapedia.bulbagarden.net/wiki/Catching_Charm): whether the user has the Catching Charm
+- [Catching Power Level](https://m.bulbapedia.bulbagarden.net/wiki/Sandwich#Meal_Powers): the level of the user's catching power, temporarily obtained by making sandwiches.
+- [Badges](https://bulbapedia.bulbagarden.net/wiki/Badge): amount of Badges obtained by the user
+
+#### Pokédex Progress
+
+- [Paldea Pokédex](https://www.serebii.net/scarletviolet/paldeapokedex.shtml): 0-400
+- [Kitakami Pokédex](https://www.serebii.net/scarletviolet/kitakamipokedex.shtml): 0-200
+- [Blueberry Pokedex](https://www.serebii.net/scarletviolet/blueberrypokedex.shtml): 0-243
+
+## Resources
+
+- [PokéAPI](https://github.com/PokeAPI/pokeapi)
+- [Anubis formula breakdown](https://x.com/Sibuna_Switch/status/1610341810655608833)
+- [Datamine compilation roundup | Reddit](https://www.reddit.com/r/PokeLeaks/comments/ys27pn/datamine_compilation_roundup/)
+- [Bulbapedia](https://bulbapedia.bulbagarden.net/wiki/Catch_rate)
+- [Serebii](https://www.serebii.net/pokedex-sv/)
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+Pokémon and Pokémon character names are trademarks of Nintendo.
