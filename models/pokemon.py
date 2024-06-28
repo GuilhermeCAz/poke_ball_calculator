@@ -1,21 +1,22 @@
 import math
 from dataclasses import dataclass
 from enum import Enum, StrEnum, auto
+from typing import Any
 
 from settings import ASSETS_URL
 from src.api import get_resource
 
 
 class PokemonSprites:
-    def __init__(self, sprites: dict) -> None:
+    def __init__(self, sprites: dict[str, Any]) -> None:
         self.home = HomeSprites(sprites['other']['home'])
         self.official_artwork = OfficialArtworkSprites(
-            sprites['other']['official-artwork']
+            sprites['other']['official-artwork'],
         )
 
 
 class HomeSprites:
-    def __init__(self, sprites: dict) -> None:
+    def __init__(self, sprites: dict[str, Any]) -> None:
         self.default = sprites['front_default']
         self.female = sprites['front_female']
         self.shiny = sprites['front_shiny']
@@ -23,7 +24,7 @@ class HomeSprites:
 
 
 class OfficialArtworkSprites:
-    def __init__(self, sprites: dict) -> None:
+    def __init__(self, sprites: dict[str, Any]) -> None:
         self.default = sprites['front_default']
         self.shiny = sprites['front_shiny']
 
@@ -89,8 +90,10 @@ class PokemonSpecies:
         self.has_gender_differences: bool = self.species_page[
             'has_gender_differences'
         ]
-        self.pokedex_numbers: list[dict] = self.species_page['pokedex_numbers']
-        self.varieties: list[dict] = self.species_page['varieties']
+        self.pokedex_numbers: list[dict[str, Any]] = self.species_page[
+            'pokedex_numbers'
+        ]
+        self.varieties: list[dict[str, Any]] = self.species_page['varieties']
 
         self.evolution = None
 
@@ -98,13 +101,12 @@ class PokemonSpecies:
 class Pokemon(PokemonSpecies):
     def __init__(self, form_id: str | int, level: int = 1) -> None:
         self.form_page = get_resource('pokemon', form_id)
-        self.abilities: list[dict] = self.form_page['abilities']
-        # self.forms: list[dict[str, str]] = self.form_page['forms']
+        self.abilities: list[dict[str, Any]] = self.form_page['abilities']
         self.height: float = self.form_page['height'] / 10  # meters
         self.moves = self.form_page['moves']
         self.sprites = PokemonSprites(self.form_page['sprites'])
         self.stats = PokemonStats(
-            *[stat['base_stat'] for stat in self.form_page['stats']]
+            *[stat['base_stat'] for stat in self.form_page['stats']],
         )
         self.types = [
             PokemonType[entry['type']['name'].upper()]

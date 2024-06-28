@@ -84,7 +84,8 @@ def main() -> None:
             filtered_catch_rates = format_catch_rates(catch_rates)
 
             form_columns[1].markdown(
-                filtered_catch_rates, unsafe_allow_html=True
+                filtered_catch_rates,
+                unsafe_allow_html=True,
             )
 
 

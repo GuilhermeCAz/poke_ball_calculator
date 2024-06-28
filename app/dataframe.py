@@ -12,7 +12,7 @@ def get_catch_rates(pokemon: Pokemon) -> pd.DataFrame:
     # add max_iv catch rates  # to-do
     battle_variables = get_battle_variables(pokemon.min_hp)
     game_variables = get_game_variables()
-    catch_rates_data: list[dict] = []
+    catch_rates_data: list[dict[str, str | float | None]] = []
     for min_iv_scenario, min_iv_rate in calculate_modified_catch_rates(
         pokemon=pokemon,
         hp=pokemon.min_hp,
@@ -31,7 +31,7 @@ def get_catch_rates(pokemon: Pokemon) -> pd.DataFrame:
                 'Poké Ball': min_iv_scenario.poke_ball.value,
                 'Condition': min_iv_scenario.condition or '',
                 'Catch Rate': catch_rate,
-            }
+            },
         )
     return pd.DataFrame(catch_rates_data)
 
@@ -57,7 +57,8 @@ def format_catch_rates(catch_rates: pd.DataFrame) -> str:
     ]
 
     sorted_catch_rates = filtered_catch_rates.sort_values(
-        by=['Catch Rate', 'Poké Ball', 'Turns', 'Condition'], ascending=False
+        by=['Catch Rate', 'Poké Ball', 'Turns', 'Condition'],
+        ascending=False,
     ).drop(columns='Turns')
 
     return sorted_catch_rates.to_html(

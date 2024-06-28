@@ -1,4 +1,5 @@
 import math
+import pathlib
 
 import streamlit as st
 
@@ -16,9 +17,10 @@ def set_basic_configuration() -> None:
         initial_sidebar_state='expanded',
     )
 
-    with open(ROOT / 'css' / 'styles.css') as css:
+    with pathlib.Path.open(ROOT / 'assets' / 'css' / 'styles.css') as css:
         st.markdown(
-            '<style>' + css.read() + '</style>', unsafe_allow_html=True
+            '<style>' + css.read() + '</style>',
+            unsafe_allow_html=True,
         )
 
     st.title('Catch Rate Calculator')

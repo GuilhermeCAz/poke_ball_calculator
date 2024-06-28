@@ -37,7 +37,7 @@ def calculate_modified_catch_rates(
         return (
             modifiers.get_hp_modifier(hp, battle_variables.target_current_hp),
             modifiers.get_dark_grass_modifier(
-                game_variables.registered_pokemon
+                game_variables.registered_pokemon,
             ),
             modifiers.get_badge_modifier(game_variables.badges, pokemon.level),
             modifiers.get_status_modifier(battle_variables.target_status),
@@ -51,7 +51,9 @@ def calculate_modified_catch_rates(
         scenario: CatchScenario,
     ) -> int:
         species_modifier = modifiers.get_species_modifier(
-            pokemon.catch_rate, pokemon.weight, scenario.poke_ball
+            pokemon.catch_rate,
+            pokemon.weight,
+            scenario.poke_ball,
         )
         c = _calculate_c(species_modifier, b)
         d = _calculate_d(scenario.catch_rate, c)
@@ -95,11 +97,6 @@ def calculate_modified_catch_rates(
     ) = _get_constant_modifiers()
 
     scenarios = get_catch_scenarios(pokemon)
-    # scenarios = [
-    #     scenario
-    #     for scenario in scenarios
-    #     if scenario.poke_ball == PokeBall.QUICK_BALL
-    # ]
 
     a = _calculate_a()
     b = _calculate_b(a)
@@ -113,17 +110,18 @@ def calculate_modified_catch_rates(
 def calculate_critical_catch_value(
     modified_catch_rate: int,
     registered_pokemon_on_dex: int = 843,
+    *,
     catching_charm: bool = True,
 ) -> int:
     """Return value used to evaluate whether a catch is critical."""
     critical_catch_modifier = modifiers.get_critical_catch_modifier(
-        registered_pokemon_on_dex
+        registered_pokemon_on_dex,
     )
     return math.floor(
         special_round(critical_catch_modifier * modified_catch_rate)
         * (2 if catching_charm else 1)
         * 715827883
-        / (4294967296 * 4096)
+        / (4294967296 * 4096),
     )
 
 
@@ -134,7 +132,7 @@ def calculate_critical_catch_odds(critical_catch_value: float) -> float:
 
 def calculate_shake_value(modified_catch_rate: int) -> int:
     """Return value used to evaluate whether a shake is successful."""
-    return 65536 / (((255 * 4096) / modified_catch_rate) ** (3 / 16))
+    return int(65536 / (((255 * 4096) / modified_catch_rate) ** (3 / 16)))
 
 
 def calculate_successful_shake_odds(shake_value: int) -> float:
@@ -143,7 +141,9 @@ def calculate_successful_shake_odds(shake_value: int) -> float:
 
 
 def calculate_successful_catch_odds(
-    is_critical_catch: bool, successful_shake_odds: float
+    successful_shake_odds: float,
+    *,
+    is_critical_catch: bool,
 ) -> float:
     if is_critical_catch:
         return successful_shake_odds
@@ -153,10 +153,13 @@ def calculate_successful_catch_odds(
 def calculate_overall_catch_rate(
     modified_catch_rate: int,
     registered_pokemon: int = 843,
+    *,
     catching_charm: bool = True,
 ) -> float:
     ccv = calculate_critical_catch_value(
-        modified_catch_rate, registered_pokemon, catching_charm
+        modified_catch_rate,
+        registered_pokemon,
+        catching_charm=catching_charm,
     )
     critical_catch_odds = calculate_critical_catch_odds(ccv)
 
@@ -165,10 +168,16 @@ def calculate_overall_catch_rate(
 
     successful_crit_catch_odds = (
         critical_catch_odds
-        * calculate_successful_catch_odds(True, successful_shake_odds)
+        * calculate_successful_catch_odds(
+            successful_shake_odds,
+            is_critical_catch=True,
+        )
     )
     successful_non_crit_catch_odds = (
         1 - critical_catch_odds
-    ) * calculate_successful_catch_odds(False, successful_shake_odds)
+    ) * calculate_successful_catch_odds(
+        successful_shake_odds,
+        is_critical_catch=False,
+    )
 
     return successful_crit_catch_odds + successful_non_crit_catch_odds

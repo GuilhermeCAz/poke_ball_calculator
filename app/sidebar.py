@@ -41,7 +41,11 @@ def add_sidebar_widgets() -> None:
         )
 
         st.number_input(
-            'Badges', min_value=0, max_value=8, value=8, key='badges'
+            'Badges',
+            min_value=0,
+            max_value=8,
+            value=8,
+            key='badges',
         )
 
         st.number_input(

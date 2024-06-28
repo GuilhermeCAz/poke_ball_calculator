@@ -28,7 +28,7 @@ class NoMatchFoundError(Exception):
     def __init__(self) -> None:
         """Alter standard exception message."""
         super().__init__(
-            'The RegEx pattern returned no matches in the snippet.'
+            'The RegEx pattern returned no matches in the snippet.',
         )
 
 
