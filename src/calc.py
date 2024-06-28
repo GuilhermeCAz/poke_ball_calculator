@@ -43,7 +43,7 @@ def calculate_modified_catch_rates(
             modifiers.get_status_modifier(battle_variables.target_status),
             modifiers.get_capture_value_coefficient_modifier(
                 battle_variables.catching_power_level,
-                battle_variables.backstrike,
+                backstrike=battle_variables.backstrike,
             ),
         )
 

@@ -27,7 +27,9 @@ def get_dark_grass_modifier(registered_pokemon_on_dex: int) -> int:
 
 
 def get_species_modifier(
-    catch_rate: int, weight: float, poke_ball: PokeBall
+    catch_rate: int,
+    weight: float,
+    poke_ball: PokeBall,
 ) -> int:
     if poke_ball == PokeBall.HEAVY_BALL:
         for (min_weight, max_weight), modifier in HEAVY_BALL_RANGES.items():
@@ -54,7 +56,9 @@ def get_status_modifier(status: PokemonStatus | None) -> int:
 
 
 def get_capture_value_coefficient_modifier(
-    catching_power_level: int, backstrike: bool
+    catching_power_level: int,
+    *,
+    backstrike: bool,
 ) -> float:
     backstrike_modifier = 2 if backstrike else 1
     if catching_power_level in CATCHING_POWER_MODIFIERS:

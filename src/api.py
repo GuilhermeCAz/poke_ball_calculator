@@ -1,3 +1,4 @@
+from typing import Any, cast
 from urllib.parse import urljoin
 
 import requests
@@ -8,21 +9,23 @@ BASE_API_URL = 'https://pokeapi.co/api/v2/'
 
 def get_pages() -> dict[str, str]:
     response = requests.get(BASE_API_URL, timeout=1)
-    return response.json()
+    return cast(dict[str, str], response.json())
 
 
 def get_endpoint(endpoint: str) -> list[dict[str, str]]:
     pages = get_pages()
     response = requests.get(pages[endpoint], params=PAYLOAD, timeout=10)
-    return response.json()['results']
+    return cast(list[dict[str, str]], response.json()['results'])
 
 
-def get_resource(endpoint: str, resource: int | str) -> dict:
+def get_resource(endpoint: str, resource: int | str) -> dict[str, Any]:
     pages = get_pages()
     response = requests.get(
-        urljoin(pages[endpoint], str(resource)), params=PAYLOAD, timeout=10
+        urljoin(pages[endpoint], str(resource)),
+        params=PAYLOAD,
+        timeout=10,
     )
-    return response.json()
+    return cast(dict[str, Any], response.json())
 
 
 def get_pokemon_names() -> tuple[str, ...]:

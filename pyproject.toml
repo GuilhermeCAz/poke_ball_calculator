@@ -30,9 +30,8 @@ extend-ignore = [
     "D203",   # one-blank-line-before-class: clashes with D211
     "D212",   # multi-line-summary-first-line: clashes with D213
     "Q000",   # quotes: single quotes are preferred
-    "ARG",    # flake8-unused-arguments
-    "D",      # pydocstyle: removed during early development
     "PIE796", # non-unique-enums
+    "D",      # pydocstyle: removed during early development
 ]
 
 [tool.ruff.lint.per-file-ignores]

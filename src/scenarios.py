@@ -40,20 +40,20 @@ def get_catch_scenarios(target_pokemon: Pokemon) -> list[CatchScenario]:
             [
                 CatchScenario(base_catch_rate_ball, 0x1000)
                 for base_catch_rate_ball in base_catch_rate_balls
-            ]
+            ],
         )
 
     def _get_timer_ball_rates() -> None:
-        for turns in range(0, 11):
-            catch_scenarios.append(
-                CatchScenario(
-                    poke_ball=PokeBall.TIMER_BALL,
-                    catch_rate=min(turns * 1229 + 0x1000, 0x4000),
-                    condition=f'{turns} {"turn" if turns == 1 else "turns"}'
-                    ' since battle started',
-                    # is_condition_true=user information required
-                )
+        catch_scenarios.extend(
+            CatchScenario(
+                poke_ball=PokeBall.TIMER_BALL,
+                catch_rate=min(turns * 1229 + 0x1000, 0x4000),
+                condition=f'{turns} {"turn" if turns == 1 else "turns"}'
+                ' since battle started',
+                # is_condition_true=user information required
             )
+            for turns in range(11)
+        )
 
     _get_base_catch_rates()
     _get_timer_ball_rates()
@@ -166,7 +166,7 @@ def get_catch_scenarios(target_pokemon: Pokemon) -> list[CatchScenario]:
             CatchScenario(
                 poke_ball=PokeBall.NEST_BALL,
                 catch_rate=math.floor(
-                    ((41 - target_pokemon.level) * 0x1000 + 0.5) / 10
+                    ((41 - target_pokemon.level) * 0x1000 + 0.5) / 10,
                 ),
                 condition='Target Pokémon Level < 30',
                 is_possible=target_pokemon.level < NEST_BALL_LEVEL_MIN,
@@ -213,7 +213,7 @@ def get_catch_scenarios(target_pokemon: Pokemon) -> list[CatchScenario]:
                 condition='Target Pokémon is not an Ultra Beast',
                 is_possible=target_pokemon.dex_no not in UB_DEX_NUMBERS,
             ),
-        ]
+        ],
     )
 
     return [scenario for scenario in catch_scenarios if scenario.is_possible]
