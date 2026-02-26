@@ -3,7 +3,7 @@
 import pathlib
 
 ROOT = pathlib.Path(__file__).resolve().parent
-ASSETS_URL = 'https://raw.githubusercontent.com/marcelogcardozo/poke_ball_calculator_assets/main/'
+ASSETS_URL = 'https://raw.githubusercontent.com/GuilhermeCAz/poke_ball_calculator_assets/main/'
 
 CURRENT_LAST_DEX_NUMBER = 1025
 POKEMON_LEVEL_CAP = 100
